@@ -5,7 +5,7 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract TokenCrossChain is ERC20, Ownable {
-    constructor(address initialOwner) ERC20("TokenCrossChain", "TCC") Ownable(initialOwner) {}
+    constructor() ERC20("TokenCrossChain", "TCC") Ownable() {}
 
     function mint(address to, uint256 amount) public onlyOwner {
         _mint(to, amount);

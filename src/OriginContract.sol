@@ -18,7 +18,7 @@ contract OriginContract is Withdraw {
 
     event MessageSent(bytes32 messageId);
 
-    error MintNotSuccessfull;
+    error MintNotSuccessfull();
 
     constructor(address router, address link) {
         i_router = router;
@@ -31,10 +31,10 @@ contract OriginContract is Withdraw {
         uint64 destinationChainSelector,
         address tokenAddress,
         address receiver,
-        string memory message,
+        string memory messageText,
         PayFeesIn payFeesIn
-    ) external returns (bytes32 messageId) {
-        bool minted = ITokenCrossChain(tokenAddress).mint(address.this(), uint256(1));
+    ) external {
+        bool minted = ITokenCrossChain(tokenAddress).mint(address(this), uint256(1));
 
         if (!minted) revert MintNotSuccessfull();
 

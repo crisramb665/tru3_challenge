@@ -3,25 +3,33 @@ pragma solidity 0.8.19;
 
 import "forge-std/Script.sol";
 import "./Helper.sol";
-import {BasicMessageSender} from "../src/BasicMessageSender.sol";
+import {TokenCrossChain} from "../src/TokenCrossChain.sol";
+import {OriginContract} from "../src/OriginContract.sol";
 
-contract DeployBasicMessageSender is Script, Helper {
+contract DeployOriginContract is Script, Helper {
     function run(SupportedNetworks source) external {
         uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
         vm.startBroadcast(deployerPrivateKey);
 
+        address initialTokenOwner = address(0xbc6b93f3Aba28CD04B96c50b0F0ac53a24564718);
+        TokenCrossChain tokenCC = new TokenCrossChain(initialTokenOwner);
+
+        console.log(
+            "Token contract deployed on ", networks[source], "with address: ", address(tokenCC)
+        );
+
         (address router, address link,,) = getConfigFromNetwork(source);
 
-        BasicMessageSender basicMessageSender = new BasicMessageSender(
+        OriginContract originContract = new OriginContract(
             router,
             link
         );
 
         console.log(
-            "BasicMessageSender contract deployed on ",
+            "OriginContract contract deployed on ",
             networks[source],
             "with address: ",
-            address(basicMessageSender)
+            address(originContract)
         );
 
         vm.stopBroadcast();
@@ -34,7 +42,7 @@ contract SendMessage is Script, Helper {
         SupportedNetworks destination,
         address receiver,
         string memory message,
-        BasicMessageSender.PayFeesIn payFeesIn
+        OriginContract.PayFeesIn payFeesIn
     ) external {
         uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
         vm.startBroadcast(deployerPrivateKey);
@@ -42,7 +50,7 @@ contract SendMessage is Script, Helper {
         (,,, uint64 destinationChainId) = getConfigFromNetwork(destination);
 
         bytes32 messageId =
-            BasicMessageSender(sender).send(destinationChainId, receiver, message, payFeesIn);
+            OriginContract(sender).send(destinationChainId, receiver, message, payFeesIn);
 
         console.log(
             "You can now monitor the status of your Chainlink CCIP Message via https://ccip.chain.link using CCIP Message ID: "
