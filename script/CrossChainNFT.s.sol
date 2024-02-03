@@ -12,16 +12,11 @@ contract DeployDestination is Script, Helper {
         uint256 senderPrivateKey = vm.envUint("PRIVATE_KEY");
         vm.startBroadcast(senderPrivateKey);
 
-        (address router, , , ) = getConfigFromNetwork(destination);
+        (address router,,,) = getConfigFromNetwork(destination);
 
         MyNFT myNFT = new MyNFT();
 
-        console.log(
-            "MyNFT deployed on ",
-            networks[destination],
-            "with address: ",
-            address(myNFT)
-        );
+        console.log("MyNFT deployed on ", networks[destination], "with address: ", address(myNFT));
 
         DestinationMinter destinationMinter = new DestinationMinter(
             router,
@@ -49,15 +44,12 @@ contract DeploySource is Script, Helper {
         uint256 senderPrivateKey = vm.envUint("PRIVATE_KEY");
         vm.startBroadcast(senderPrivateKey);
 
-        (address router, address link, , ) = getConfigFromNetwork(source);
+        (address router, address link,,) = getConfigFromNetwork(source);
 
         SourceMinter sourceMinter = new SourceMinter(router, link);
 
         console.log(
-            "SourceMinter deployed on ",
-            networks[source],
-            "with address: ",
-            address(sourceMinter)
+            "SourceMinter deployed on ", networks[source], "with address: ", address(sourceMinter)
         );
 
         vm.stopBroadcast();
@@ -74,12 +66,10 @@ contract Mint is Script, Helper {
         uint256 senderPrivateKey = vm.envUint("PRIVATE_KEY");
         vm.startBroadcast(senderPrivateKey);
 
-        (, , , uint64 destinationChainId) = getConfigFromNetwork(destination);
+        (,,, uint64 destinationChainId) = getConfigFromNetwork(destination);
 
         SourceMinter(sourceMinterAddress).mint(
-            destinationChainId,
-            destinationMinterAddress,
-            payFeesIn
+            destinationChainId, destinationMinterAddress, payFeesIn
         );
 
         vm.stopBroadcast();

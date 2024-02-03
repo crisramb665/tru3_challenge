@@ -11,7 +11,7 @@ contract DeployBasicTokenSender is Script, Helper {
         uint256 senderPrivateKey = vm.envUint("PRIVATE_KEY");
         vm.startBroadcast(senderPrivateKey);
 
-        (address router, address linkToken, , ) = getConfigFromNetwork(source);
+        (address router, address linkToken,,) = getConfigFromNetwork(source);
 
         BasicTokenSender basicTokenSender = new BasicTokenSender(
             router,
@@ -40,13 +40,10 @@ contract SendBatch is Script, Helper {
         uint256 senderPrivateKey = vm.envUint("PRIVATE_KEY");
         vm.startBroadcast(senderPrivateKey);
 
-        (, , , uint64 destinationChainId) = getConfigFromNetwork(destination);
+        (,,, uint64 destinationChainId) = getConfigFromNetwork(destination);
 
         BasicTokenSender(basicTokenSenderAddres).send(
-            destinationChainId,
-            receiver,
-            tokensToSendDetails,
-            payFeesIn
+            destinationChainId, receiver, tokensToSendDetails, payFeesIn
         );
 
         vm.stopBroadcast();
