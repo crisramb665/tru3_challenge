@@ -1,66 +1,75 @@
-## Foundry
+## Introduction
+This is the technical challenge repository to TruWeb3, where a contract deployed on Eth Sepolia is able to mint a token, and then send a cross-chain message to another contract deployed on Polygon Mumbai. 
 
-**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
+The contract on Polygon Mumbai will broadcast a message back to Sepolia and then it will make to the original contract to mint another token for it.
 
-Foundry consists of:
+These contracts are able to be deployed on several testnets chains as well. Check the supported chains below.
 
--   **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
--   **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
--   **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
--   **Chisel**: Fast, utilitarian, and verbose solidity REPL.
+## Tools used
+- Foundry
+- Node & NPM
+- Chainlink
 
-## Documentation
+## Deployed contracts
 
-https://book.getfoundry.sh/
+- OriginContract on Sepolia: 0xe56Ff6076710F7C11A153C44aA6C6Ef5191465Cf
+- ReceiverContract on Polygon Mumbai: 0xED2A66eB8b8ee904751433879Bf08657Dd445de6
+- token 1 address: 0x29071bd845B6000F87c71E8062FC10bdBC88df78
+- token 2 address: 0x229288f40F7D88fe3Ba90978F99c654571Cd3b40
 
-## Usage
+## Getting started
 
-### Build
+1. Install packages
 
-```shell
-$ forge build
+```
+forge install
 ```
 
-### Test
+and
 
-```shell
-$ forge test
+```
+npm install
 ```
 
-### Format
+2. Compile contracts
+
+```
+forge build
+```
+## How to use it?
+
+1. Create a new file by copying the `.env.example` file, and name it `.env`. Fill in your wallet's PRIVATE_KEY, and RPC URLs for at least two blockchains
 
 ```shell
-$ forge fmt
+PRIVATE_KEY=""
+ETHEREUM_SEPOLIA_RPC_URL=""
+OPTIMISM_GOERLI_RPC_URL=""
+ARBITRUM_SEPOLIA_RPC_URL=""
+AVALANCHE_FUJI_RPC_URL=""
+POLYGON_MUMBAI_RPC_URL=""
+BNB_CHAIN_TESTNET_RPC_URL=""
+BASE_GOERLI_RPC_URL=""
 ```
 
-### Gas Snapshots
+NOTE: make sure you provided at least the RPC for Ethereum Sepolia and Polygon Mumbai and your EOA private key.
+
+Once that is done, to load the variables in the `.env` file, run the following command:
 
 ```shell
-$ forge snapshot
+source .env
 ```
 
-### Anvil
+Once this step is completed, we can test the broadcast.
+
+2. You can execute the broadcast running this command on your terminal
 
 ```shell
-$ anvil
+forge script ./script/Execution.s.sol:SendMessage -vvv --broadcast --rpc-url ethereumSepolia --sig "run(address,uint8,address,address,string,uint8)" -- 0xe56Ff6076710F7C11A153C44aA6C6Ef5191465Cf 4 0x29071bd845B6000F87c71E8062FC10bdBC88df78 0xED2A66eB8b8ee904751433879Bf08657Dd445de6 "Mint back" 0
 ```
+Once the execution is done, you can get the txHash where you will see the whole tx details. 
 
-### Deploy
-
-```shell
-$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
-```
-
-### Cast
+After a couple of minutes, you will be able to check the message on the destination chain running this command:
 
 ```shell
-$ cast <subcommand>
-```
-
-### Help
-
-```shell
-$ forge --help
-$ anvil --help
-$ cast --help
+forge script ./script/Execution.s.sol:GetLatestMessageDetails -vvv --broadcast --rpc-url polygonMumbai --sig "run(address)" -- 0xED2A66eB8b8ee904751433879Bf08657Dd445de6
 ```
