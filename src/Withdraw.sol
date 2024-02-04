@@ -1,15 +1,14 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity 0.8.19;
+pragma solidity ^0.8.19;
 
 import {OwnerIsCreator} from "@chainlink/contracts-ccip/src/v0.8/shared/access/OwnerIsCreator.sol";
 import {IERC20} from
     "@chainlink/contracts-ccip/src/v0.8/vendor/openzeppelin-solidity/v4.8.0/contracts/token/ERC20/IERC20.sol";
 import {SafeERC20} from
     "@chainlink/contracts-ccip/src/v0.8/vendor/openzeppelin-solidity/v4.8.0/contracts/token/ERC20/utils/SafeERC20.sol";
-import {TokenCrossChain} from "./TokenCrossChain.sol";
 
-contract Withdraw is TokenCrossChain, OwnerIsCreator {
+contract Withdraw is OwnerIsCreator {
     using SafeERC20 for IERC20;
 
     error FailedToWithdrawEth(address owner, address target, uint256 value);
