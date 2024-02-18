@@ -73,3 +73,12 @@ After a couple of minutes, you will be able to check the message on the destinat
 ```shell
 forge script ./script/Execution.s.sol:GetLatestMessageDetails -vvv --broadcast --rpc-url polygonMumbai --sig "run(address)" -- 0xED2A66eB8b8ee904751433879Bf08657Dd445de6
 ```
+
+# How to run the tests?
+
+You just simply have to run this command on your terminal:
+
+```shell
+forge test -vv => This command will display a simple test version
+forge test -vvvv => This commando will display a traced test version
+```
