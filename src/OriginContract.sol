@@ -24,7 +24,7 @@ contract OriginContract is Withdraw, CCIPReceiver {
 
     ITokenCrossChain public tokenToMintBack;
 
-    event MessageSent(bytes32 messageId);
+    event MessageSent();
     event MintToTokenBackSuccessful();
 
     error MintNotSuccessfull();
@@ -67,7 +67,7 @@ contract OriginContract is Withdraw, CCIPReceiver {
                 IRouterClient(i_router).ccipSend{value: fee}(destinationChainSelector, message);
         }
 
-        emit MessageSent(messageId);
+        emit MessageSent();
     }
 
     function _ccipReceive(Client.Any2EVMMessage memory message) internal override {
@@ -82,5 +82,13 @@ contract OriginContract is Withdraw, CCIPReceiver {
         returns (bytes32, uint64, address, string memory)
     {
         return (latestMessageId, latestSourceChainSelector, latestSender, latestMessage);
+    }
+
+    function getInternalRouter() public view returns (address) {
+        return i_router_toUse;
+    }
+
+    function getLinkTokenAddress() public view returns (address) {
+        return i_link;
     }
 }

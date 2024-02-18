@@ -97,4 +97,12 @@ contract ReceiverContract is CCIPReceiver {
     {
         return (latestMessageId, latestSourceChainSelector, latestSender, latestMessage);
     }
+
+    function getInternalRouter() public view returns (address) {
+        return i_router_toUse;
+    }
+
+    function getLinkTokenAddress() public view returns (address) {
+        return i_link;
+    }
 }
